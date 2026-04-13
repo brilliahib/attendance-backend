@@ -1,23 +1,22 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Role } from '../../../../generated/prisma/enums';
+import { EmployeeEntity } from '../../employee/entities/employee.entity';
 
 export class AuthEntity {
   @ApiProperty()
-  id: number;
+  id: string;
 
   @ApiProperty()
   email: string;
 
-  @ApiProperty()
-  username: string;
+  @ApiProperty({ enum: Role })
+  role: Role;
 
   @ApiProperty()
-  name: string;
+  isActive: boolean;
 
-  @ApiProperty()
-  password: string;
-
-  @ApiProperty()
-  role: string;
+  @ApiPropertyOptional({ type: EmployeeEntity })
+  employee?: EmployeeEntity | null;
 
   @ApiProperty()
   createdAt: Date;
