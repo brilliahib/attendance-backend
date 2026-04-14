@@ -249,18 +249,18 @@ export class AttendanceService {
       this.prisma.attendance.findMany({
         where,
         skip,
-        take: limit,
-        include: {
-          employee: {
-            select: {
-              id: true,
-              employeeCode: true,
-              fullName: true,
-              department: true,
-              position: true,
-            },
-          },
+        select: {
+          id: true,
+          employeeId: true,
+          workDate: true,
+          checkInAt: true,
+          photoCheckInUrl: true,
+          checkInNote: true,
+          checkOutAt: true,
+          photoCheckOutUrl: true,
+          checkOutNote: true,
         },
+        take: limit,
         orderBy: {
           createdAt: 'desc',
         },
@@ -271,6 +271,43 @@ export class AttendanceService {
     const pagination = buildPaginationMeta({ page, limit, totalItems });
 
     return { data, pagination };
+  }
+
+  async findAttendanceTodayByUserId(userId: string) {
+    const employee = await this.prisma.employee.findFirst({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!employee) {
+      return null;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const attendance = await this.prisma.attendance.findFirst({
+      where: {
+        employeeId: employee.id,
+        workDate: today,
+      },
+      select: {
+        workDate: true,
+        checkInAt: true,
+        photoCheckInUrl: true,
+        checkInNote: true,
+        checkOutAt: true,
+        photoCheckOutUrl: true,
+        checkOutNote: true,
+      },
+    });
+
+    return attendance;
   }
 
   async findById(id: string): Promise<AttendanceEntity> {
