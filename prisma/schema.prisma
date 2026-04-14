@@ -14,13 +14,65 @@ datasource db {
 
 enum Role {
   ADMIN
-  EMPLLOYEE
+  EMPLOYEE
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(EMPLLOYEE)
+  id           String     @id @default(cuid())
+  email        String     @unique
+  password String
+  role         Role   @default(EMPLOYEE)
+  isActive     Boolean    @default(true)
+  employee     Employee?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model Employee {
+  id            String           @id @default(cuid())
+  userId        String           @unique
+  employeeCode  String           @unique
+  fullName      String
+  phone         String?
+  department    String?
+  position      String?
+  joinDate      DateTime?
+  address       String?
+
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attendances   Attendance[]
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
+
+  @@index([fullName])
+  @@index([department])
+}
+
+model Attendance {
+  id               String   @id @default(cuid())
+  employeeId       String
+  workDate         DateTime
+
+  checkInAt        DateTime @default(now())
+  photoCheckInUrl  String
+  checkInNote      String?
+
+  checkOutAt       DateTime?
+  photoCheckOutUrl String?
+  checkOutNote     String?
+
+  employee         Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([employeeId, workDate])
+  @@index([workDate])
+  @@index([employeeId])
 }
