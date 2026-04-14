@@ -26,6 +26,7 @@ export class AuthService {
       department,
       position,
       address,
+      joinDate,
       ...data
     } = dto;
 
@@ -64,6 +65,7 @@ export class AuthService {
           department,
           position,
           address,
+          joinDate: joinDate ? new Date(joinDate) : undefined,
         },
       });
 
