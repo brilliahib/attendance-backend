@@ -67,6 +67,19 @@ export class AttendanceController {
     };
   }
 
+  @Get('today')
+  @UseGuards(JwtAuthGuard)
+  async findToday(@Req() req: AuthenticatedRequest) {
+    const data = await this.attendanceService.findAttendanceTodayByUserId(
+      req.user.id,
+    );
+
+    return {
+      data,
+      message: 'Today attendance retrieved successfully',
+    };
+  }
+
   @Post('check-out')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -112,7 +125,7 @@ export class AttendanceController {
     };
   }
 
-  @Get('me')
+  @Get('history')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({
     description: 'My attendances retrieved successfully',
@@ -132,9 +145,28 @@ export class AttendanceController {
     };
   }
 
-  @Get(':id')
+  @Get('/user/:userId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @ApiOkResponse({
+    description: 'User attendances retrieved successfully',
+    type: [AttendanceEntity],
+  })
+  async findByUserIdAdmin(
+    @Param('userId') userId: string,
+    @Query() query: GetAllAttendanceDto,
+  ) {
+    const result = await this.attendanceService.findByUserId(userId, query);
+
+    return {
+      data: result.data,
+      pagination: result.pagination,
+      message: 'User attendances retrieved successfully',
+    };
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOkResponse({
     description: 'Attendance detail retrieved successfully',
     type: AttendanceEntity,
