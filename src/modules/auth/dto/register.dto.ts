@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -53,4 +54,9 @@ export class RegisterDto {
   @IsOptional()
   @IsString({ message: 'Address must be a string' })
   address?: string;
+
+  @ApiPropertyOptional({ example: '2026-04-13' })
+  @IsOptional()
+  @IsDateString({}, { message: 'Join date must be a valid date string' })
+  joinDate?: string;
 }

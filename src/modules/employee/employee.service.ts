@@ -33,6 +33,9 @@ export class EmployeeService {
     const { search, department } = filter;
 
     const where: Prisma.EmployeeWhereInput = {
+      user: {
+        role: 'EMPLOYEE',
+      },
       deletedAt: null,
 
       ...(search?.trim() && {
@@ -160,6 +163,9 @@ export class EmployeeService {
         id,
         deletedAt: null,
       },
+      include: {
+        user: true,
+      },
     });
 
     if (!employee) {
@@ -179,6 +185,29 @@ export class EmployeeService {
       }
     }
 
+    if (dto.email) {
+      const emailExists = await this.prisma.user.findFirst({
+        where: {
+          email: dto.email,
+          NOT: { id: employee.userId },
+        },
+      });
+
+      if (emailExists) {
+        throw new ConflictException('Email already used');
+      }
+    }
+
+    const userData =
+      dto.email !== undefined || dto.isActive !== undefined
+        ? {
+            update: {
+              email: dto.email,
+              isActive: dto.isActive,
+            },
+          }
+        : undefined;
+
     const updatedEmployee = await this.prisma.employee.update({
       where: { id },
       data: {
@@ -189,6 +218,7 @@ export class EmployeeService {
         position: dto.position,
         joinDate: dto.joinDate ? new Date(dto.joinDate) : undefined,
         address: dto.address,
+        user: userData,
       },
       include: {
         user: {
