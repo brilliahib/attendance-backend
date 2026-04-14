@@ -4,9 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../infra/database/prisma/prisma.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeEntity } from './entities/employee.entity';
+import { GetAllEmployeeDto } from './dto/get-all-employee.dto';
+import {
+  buildPaginationMeta,
+  normalizePagination,
+  PaginatedResult,
+} from '../../common/pagination/pagination';
+import { Prisma } from '../../../generated/prisma/client';
 
 @Injectable()
 export class EmployeeService {
@@ -21,29 +27,81 @@ export class EmployeeService {
     return !!employee;
   }
 
-  async findAll(): Promise<EmployeeEntity[]> {
-    const employees = await this.prisma.employee.findMany({
-      where: {
-        deletedAt: null,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
+  async findAll(
+    filter: GetAllEmployeeDto,
+  ): Promise<PaginatedResult<EmployeeEntity>> {
+    const { search, department } = filter;
+
+    const where: Prisma.EmployeeWhereInput = {
+      deletedAt: null,
+
+      ...(search?.trim() && {
+        OR: [
+          {
+            fullName: {
+              contains: search.trim(),
+            },
+          },
+          {
+            employeeCode: {
+              contains: search.trim(),
+            },
+          },
+          {
+            position: {
+              contains: search.trim(),
+            },
+          },
+          {
+            user: {
+              email: {
+                contains: search.trim(),
+              },
+            },
+          },
+        ],
+      }),
+
+      ...(department && {
+        department: {
+          equals: department,
+        },
+      }),
+    };
+
+    const { page, limit, skip, take } = normalizePagination(
+      { page: filter.page, limit: filter.limit },
+      { defaultLimit: 10, maxLimit: 100 },
+    );
+
+    const [totalItems, rows] = await this.prisma.$transaction([
+      this.prisma.employee.count({ where }),
+      this.prisma.employee.findMany({
+        where,
+        skip,
+        take,
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              isActive: true,
+              createdAt: true,
+              updatedAt: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
 
-    return employees.map((employee) => new EmployeeEntity(employee));
+    const data = rows.map((employee) => new EmployeeEntity(employee));
+    const pagination = buildPaginationMeta({ page, limit, totalItems });
+
+    return { data, pagination };
   }
 
   async findOne(id: string): Promise<EmployeeEntity> {

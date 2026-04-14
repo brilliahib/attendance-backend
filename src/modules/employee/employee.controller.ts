@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Roles } from '../../common/decorators/role.decorator';
 import { Role } from '../../../generated/prisma/enums';
 import { RolesGuard } from '../../common/guards/role.guard';
+import { GetAllEmployeeDto } from './dto/get-all-employee.dto';
 
 @Controller('employees')
 @ApiBearerAuth()
@@ -28,11 +30,12 @@ export class EmployeeController {
     description: 'Employees retrieved successfully',
     type: [EmployeeEntity],
   })
-  async findAll() {
-    const data = await this.employeeService.findAll();
+  async findAll(@Query() query: GetAllEmployeeDto) {
+    const result = await this.employeeService.findAll(query);
 
     return {
-      data,
+      data: result.data,
+      pagination: result.pagination,
       message: 'Employees retrieved successfully',
     };
   }
