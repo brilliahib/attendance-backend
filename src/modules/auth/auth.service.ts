@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthEntity } from './entities/auth.entity';
@@ -10,6 +11,8 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from '../../infra/database/prisma/prisma.service';
 import { JwtPayload } from '../../infra/auth/jwt-interface';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -123,6 +126,90 @@ export class AuthService {
     const { password, ...safeUser } = user;
 
     return new AuthEntity(safeUser);
+  }
+
+  async updateProfile(
+    userId: string,
+    dto: UpdateProfileDto,
+  ): Promise<AuthEntity> {
+    const currentUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { employee: true },
+    });
+
+    if (!currentUser) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (dto.email && dto.email !== currentUser.email) {
+      const existingEmail = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+
+      if (existingEmail) {
+        throw new ConflictException('Email already in use');
+      }
+    }
+
+    const updatedUser = await this.prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          ...(dto.email ? { email: dto.email } : {}),
+        },
+      });
+
+      if (currentUser.employee) {
+        await tx.employee.update({
+          where: { userId },
+          data: {
+            ...(dto.fullName ? { fullName: dto.fullName } : {}),
+            ...(dto.phone !== undefined ? { phone: dto.phone } : {}),
+            ...(dto.address !== undefined ? { address: dto.address } : {}),
+          },
+        });
+      }
+
+      return tx.user.findUniqueOrThrow({
+        where: { id: userId },
+        include: { employee: true },
+      });
+    });
+
+    return new AuthEntity(updatedUser);
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const { oldPassword, newPassword, confirmNewPassword } = dto;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isOldPasswordValid) {
+      throw new ConflictException('Current password is incorrect');
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      throw new ConflictException('New password and confirmation do not match');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    const result = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedNewPassword,
+      },
+    });
+
+    return new AuthEntity(result);
   }
 
   // TODO: implement other methods auth (forgot password, reset password, etc.)
