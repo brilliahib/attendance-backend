@@ -1,6 +1,6 @@
 <div align="center">
 
-# Attendance Backend
+# WFH Attendance Backend
 
 A NestJS-based backend system for managing employee attendance.
 
@@ -9,8 +9,6 @@ A NestJS-based backend system for managing employee attendance.
 ## Overview
 
 This repository contains the backend implementation of the WFH Attendance System. Built with **NestJS** and **TypeScript**, this project provides a structured and scalable REST API with Prisma ORM, JWT authentication, and Cloudinary integration.
-
----
 
 ## Tech Stack
 
@@ -21,16 +19,12 @@ This repository contains the backend implementation of the WFH Attendance System
 - Cloudinary
 - Swagger (API Documentation)
 
----
-
 ## Prerequisites
 
 Before running this project, make sure you have installed:
 
 1. Node.js v18 or higher
 2. pnpm (**Required** — do **not** use `npm` or `yarn`)
-
----
 
 ## Installation
 
@@ -82,8 +76,6 @@ Before running this project, make sure you have installed:
    http://localhost:9000
    ```
 
----
-
 ## Available Scripts
 
 | Script                    | Description                             |
@@ -97,8 +89,6 @@ Before running this project, make sure you have installed:
 | `pnpm prisma migrate dev` | Run Prisma migrations in development    |
 | `pnpm prisma studio`      | Open Prisma Studio                      |
 
----
-
 ## API Documentation
 
 Once the application is running, access the Swagger API documentation at:
@@ -106,8 +96,6 @@ Once the application is running, access the Swagger API documentation at:
 ```
 http://localhost:9000/docs
 ```
-
----
 
 ## Workflow
 
@@ -142,8 +130,6 @@ chore: update prisma schema
 ### 4. Pull Request
 
 All changes to the main branches (`main`, `staging`, and `development`) must go through a Pull Request flow. Do not push or merge directly into those branches.
-
----
 
 ## Folder Structure
 
