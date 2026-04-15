@@ -16,6 +16,7 @@ import {
 } from '../../common/pagination/pagination';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
+import { toJakartaUtcDateRange } from '../../utils/date-range';
 
 @Injectable()
 export class AttendanceService {
@@ -26,6 +27,11 @@ export class AttendanceService {
     userId?: string,
   ): Prisma.AttendanceWhereInput {
     const search = filter.search?.trim();
+
+    const workDateRange = toJakartaUtcDateRange(
+      filter.workDateFrom,
+      filter.workDateTo,
+    );
 
     return {
       ...(userId && {
@@ -82,18 +88,9 @@ export class AttendanceService {
         ],
       }),
 
-      ...(filter.workDateFrom || filter.workDateTo
-        ? {
-            workDate: {
-              ...(filter.workDateFrom && {
-                gte: new Date(filter.workDateFrom),
-              }),
-              ...(filter.workDateTo && {
-                lte: new Date(filter.workDateTo),
-              }),
-            },
-          }
-        : {}),
+      ...(workDateRange && {
+        workDate: workDateRange,
+      }),
     };
   }
 
