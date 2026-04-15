@@ -1,98 +1,183 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+<div align="center">
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Attendance Backend
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A NestJS-based backend system for managing employee attendance.
 
-## Description
+</div>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Overview
 
-## Project setup
+This repository contains the backend implementation of the WFH Attendance System. Built with **NestJS** and **TypeScript**, this project provides a structured and scalable REST API with Prisma ORM, JWT authentication, and Cloudinary integration.
 
-```bash
-$ pnpm install
+---
+
+## Tech Stack
+
+- NestJS
+- TypeScript
+- Prisma ORM
+- JWT (Authentication)
+- Cloudinary
+- Swagger (API Documentation)
+
+---
+
+## Prerequisites
+
+Before running this project, make sure you have installed:
+
+1. Node.js v18 or higher
+2. pnpm (**Required** — do **not** use `npm` or `yarn`)
+
+---
+
+## Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/Brilliahib/attendance-backend.git
+   ```
+
+2. Navigate to the project directory
+
+   ```bash
+   cd attendance-backend
+   ```
+
+3. Install dependencies
+
+   > ⚠️ **Important:** You **MUST** use `pnpm`. The use of `npm` or `yarn` is **strictly prohibited** to maintain consistency of the `pnpm-lock.yaml` file.
+
+   ```bash
+   pnpm install
+   ```
+
+4. Configure environment variables
+
+   Create a `.env` file in the root directory and fill in the required variables:
+
+   ```env
+   DATABASE_URL=
+   JWT_SECRET=
+   PORT=
+   ```
+
+5. Run database migrations
+
+   ```bash
+   pnpm prisma migrate dev
+   ```
+
+6. Run the development server
+
+   ```bash
+   pnpm run start:dev
+   ```
+
+7. Open the app in your browser
+
+   ```
+   http://localhost:9000
+   ```
+
+---
+
+## Available Scripts
+
+| Script                    | Description                             |
+| ------------------------- | --------------------------------------- |
+| `pnpm run start:dev`      | Run the app in development (watch) mode |
+| `pnpm run start:prod`     | Start the production server             |
+| `pnpm run build`          | Build the app for production            |
+| `pnpm run lint`           | Run ESLint                              |
+| `pnpm run test`           | Run unit tests                          |
+| `pnpm run test:e2e`       | Run end-to-end tests                    |
+| `pnpm prisma migrate dev` | Run Prisma migrations in development    |
+| `pnpm prisma studio`      | Open Prisma Studio                      |
+
+---
+
+## API Documentation
+
+Once the application is running, access the Swagger API documentation at:
+
+```
+http://localhost:9000/docs
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ pnpm run start
+## Workflow
 
-# watch mode
-$ pnpm run start:dev
+### 1. Git
 
-# production mode
-$ pnpm run start:prod
+Git is used as the version control system. Please use a branching workflow when working on new features or fixes.
+
+### 2. Branching Strategy
+
+This project uses three main branches:
+
+| Branch        | Purpose                    |
+| ------------- | -------------------------- |
+| `main`        | Production branch          |
+| `staging`     | Staging branch for testing |
+| `development` | Active development branch  |
+
+For every new feature or task, create a new branch from the `development` branch.
+
+### 3. Commit Convention
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/).
+
+Example commit messages:
+
+```
+feat: add attendance endpoint
+fix: handle jwt expiration error
+chore: update prisma schema
 ```
 
-## Run tests
+### 4. Pull Request
 
-```bash
-# unit tests
-$ pnpm run test
+All changes to the main branches (`main`, `staging`, and `development`) must go through a Pull Request flow. Do not push or merge directly into those branches.
 
-# e2e tests
-$ pnpm run test:e2e
+---
 
-# test coverage
-$ pnpm run test:cov
+## Folder Structure
+
+```
+.
+└── attendance-backend/
+    ├── prisma/              # Database schema and Prisma migrations
+    ├── src/                 # Main application source code
+    │   ├── common/          # Global decorators, exceptions, guards, & interceptors
+    │   ├── infra/           # Infrastructure config (Auth, Config, Database)
+    │   ├── modules/         # Feature modules
+    │   │   ├── attendance/  # Attendance logic and endpoints
+    │   │   ├── auth/        # Authentication and authorization logic
+    │   │   ├── dashboard/   # Summary and statistics logic
+    │   │   └── employee/    # Employee management logic
+    │   ├── utils/           # Shared utility functions
+    │   ├── main.ts          # Application entry point
+    │   └── app.module.ts    # Root module
+    ├── test/                # E2E testing files
+    └── ...                  # Nest CLI, ESLint, Prettier, TypeScript configs
 ```
 
-## Deployment
+### Folder Explanation
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Folder                   | Description                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `prisma/`                | Database schema definitions and migration files                                                                     |
+| `src/`                   | Main application source code                                                                                        |
+| `src/common`             | Reusable logic such as pagination, response interfaces, and global error handling                                   |
+| `src/infra`              | Third-party integrations and system configurations (Cloudinary, JWT strategies, Database)                           |
+| `src/modules`            | Feature modules — each subfolder represents a specific business domain with its own controllers, services, and DTOs |
+| `src/modules/attendance` | Attendance logic and endpoints                                                                                      |
+| `src/modules/auth`       | Authentication and authorization logic                                                                              |
+| `src/modules/dashboard`  | Summary and statistics logic                                                                                        |
+| `src/modules/employee`   | Employee management logic                                                                                           |
+| `src/utils`              | Shared utility functions used across modules                                                                        |
+| `test/`                  | End-to-end testing files                                                                                            |
