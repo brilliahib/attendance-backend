@@ -64,13 +64,19 @@ Before running this project, make sure you have installed:
    pnpm prisma migrate dev
    ```
 
-6. Run the development server
+6. Run database seeder
+
+   ```bash
+   pnpm prisma db seed
+   ```
+
+7. Run the development server
 
    ```bash
    pnpm run start:dev
    ```
 
-7. Open the app in your browser
+8. Open the app in your browser
 
    ```
    http://localhost:9000
@@ -87,6 +93,7 @@ Before running this project, make sure you have installed:
 | `pnpm run test`           | Run unit tests                          |
 | `pnpm run test:e2e`       | Run end-to-end tests                    |
 | `pnpm prisma migrate dev` | Run Prisma migrations in development    |
+| `pnpm prisma db seed`     | Seed the database with initial data     |
 | `pnpm prisma studio`      | Open Prisma Studio                      |
 
 ## API Documentation
