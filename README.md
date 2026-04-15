@@ -19,6 +19,14 @@ This repository contains the backend implementation of the WFH Attendance System
 - Cloudinary
 - Swagger (API Documentation)
 
+## ERD
+
+The diagram below represents the database design of the system. It shows the relationships between users, employees, and attendance records.
+
+<div align="center" style="display: flex; justify-content: center;">
+    <img align="center" src="erd.png" alt="ERD" style="width: 100%; height: auto">
+</div>
+
 ## Prerequisites
 
 Before running this project, make sure you have installed:
