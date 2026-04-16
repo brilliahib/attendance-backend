@@ -26,8 +26,8 @@ export class DashboardService {
     options?: { includeCheckoutOnly?: boolean },
   ): Prisma.Sql {
     const conditions: Prisma.Sql[] = [
-      Prisma.sql`e.deletedAt IS NULL`,
-      Prisma.sql`u.deletedAt IS NULL`,
+      Prisma.sql`e.deleted_at IS NULL`,
+      Prisma.sql`u.deleted_at IS NULL`,
       Prisma.sql`u.role = ${Role.EMPLOYEE}`,
     ];
 
@@ -44,7 +44,7 @@ export class DashboardService {
     }
 
     if (options?.includeCheckoutOnly) {
-      conditions.push(Prisma.sql`a.checkOutAt IS NOT NULL`);
+      conditions.push(Prisma.sql`a.check_out_at IS NOT NULL`);
     }
 
     return Prisma.join(conditions, ' AND ');
@@ -71,18 +71,18 @@ export class DashboardService {
         }),
 
         this.prisma.$queryRaw<Array<{ averageSeconds: unknown }>>(Prisma.sql`
-  SELECT AVG(TIME_TO_SEC(TIME(CONVERT_TZ(a.checkInAt, '+00:00', '+07:00')))) AS averageSeconds
-  FROM \`Attendance\` a
-  INNER JOIN \`Employee\` e ON e.id = a.employeeId
-  INNER JOIN \`User\` u ON u.id = e.userId
+  SELECT AVG(TIME_TO_SEC(TIME(CONVERT_TZ(a.check_in_at, '+00:00', '+07:00')))) AS averageSeconds
+  FROM \`attendance\` a
+  INNER JOIN \`employee\` e ON e.id = a.employee_id
+  INNER JOIN \`user\` u ON u.id = e.user_id
   WHERE ${baseWhere}
 `),
 
         this.prisma.$queryRaw<Array<{ averageSeconds: unknown }>>(Prisma.sql`
-  SELECT AVG(TIME_TO_SEC(TIME(CONVERT_TZ(a.checkOutAt, '+00:00', '+07:00')))) AS averageSeconds
-  FROM \`Attendance\` a
-  INNER JOIN \`Employee\` e ON e.id = a.employeeId
-  INNER JOIN \`User\` u ON u.id = e.userId
+  SELECT AVG(TIME_TO_SEC(TIME(CONVERT_TZ(a.check_out_at, '+00:00', '+07:00')))) AS averageSeconds
+  FROM \`attendance\` a
+  INNER JOIN \`employee\` e ON e.id = a.employee_id
+  INNER JOIN \`user\` u ON u.id = e.user_id
   WHERE ${checkoutWhere}
 `),
       ],
