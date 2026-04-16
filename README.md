@@ -66,25 +66,35 @@ Before running this project, make sure you have installed:
    PORT=
    ```
 
-5. Run database migrations
+5. Start the database with Docker
+
+   If you are using Docker, run:
+
+   ```bash
+   pnpm run db:up
+   ```
+
+   If you are using Laragon or another local database setup, you can skip this step.
+
+6. Run database migrations
 
    ```bash
    pnpm prisma migrate dev
    ```
 
-6. Run database seeder
+7. Run database seeder
 
    ```bash
    pnpm prisma db seed
    ```
 
-7. Run the development server
+8. Run the development server
 
    ```bash
    pnpm run start:dev
    ```
 
-8. Open the app in your browser
+9. Open the app in your browser
 
    ```
    http://localhost:9000
@@ -182,3 +192,21 @@ All changes to the main branches (`main`, `staging`, and `development`) must go 
 | `src/modules/employee`   | Employee management logic                                                                                           |
 | `src/utils`              | Shared utility functions used across modules                                                                        |
 | `test/`                  | End-to-end testing files                                                                                            |
+
+## Default Accounts
+
+After running the database seeder, the following accounts are available for testing:
+
+### Admin Account
+
+| Field    | Value            |
+| -------- | ---------------- |
+| Email    | `admin@mail.com` |
+| Password | `password123`    |
+
+### Employee Account
+
+| Field    | Value                   |
+| -------- | ----------------------- |
+| Email    | `budi.santoso@mail.com` |
+| Password | `password123`           |
