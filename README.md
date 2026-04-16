@@ -58,12 +58,12 @@ Before running this project, make sure you have installed:
 
 4. Configure environment variables
 
-   Create a `.env` file in the root directory and fill in the required variables:
+   Create a `.env` file in the root directory and fill in the required variables. Alternatively, you can copy the values from the `.env.example` file.
 
    ```env
-   DATABASE_URL=
-   JWT_SECRET=
-   PORT=
+   DATABASE_URL="mysql://root:root@localhost:3306/attendance_db?allowPublicKeyRetrieval=true&ssl=false"
+   JWT_SECRET="CHANGETHISPLEASE"
+   PORT=9000
    ```
 
 5. Start the database with Docker
