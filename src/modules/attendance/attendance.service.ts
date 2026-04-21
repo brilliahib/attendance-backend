@@ -202,9 +202,21 @@ export class AttendanceService {
     );
 
     const [totalItems, rows] = await this.prisma.$transaction([
-      this.prisma.attendance.count({ where }),
+      this.prisma.attendance.count({
+        where: {
+          ...where,
+          employee: {
+            deletedAt: null,
+          },
+        },
+      }),
       this.prisma.attendance.findMany({
-        where,
+        where: {
+          ...where,
+          employee: {
+            deletedAt: null,
+          },
+        },
         skip,
         take: limit,
         include: {
